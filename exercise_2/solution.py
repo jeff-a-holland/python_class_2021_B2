@@ -2,7 +2,6 @@
 
 class Item(object):
     def __init__(self, quantity, measure, name, price):
-        self.index = -1
         self.quantity = quantity
         self.measure = measure
         self.name = name
