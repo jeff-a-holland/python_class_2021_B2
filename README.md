@@ -1,7 +1,7 @@
 # Python Weekly Exercise B2 2021, by Reuven Lerner
 Start date: June 22, 2021
 
-15 weeks of Python exercises, as described here: https://store.lerner.co.il/wpe-b3
+15 weeks of Python exercises, as described here: https://store.lerner.co.il/wpe-b2
 
 Topics include:
 
