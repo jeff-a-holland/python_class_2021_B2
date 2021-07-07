@@ -27,7 +27,7 @@ def count_words_threading(arg):
 
     def count_words(q, filename):
         """Inner function called in thread worker object to count words in file"""
-        
+
         file = q.get()
         if os.path.isfile(file) == True:
             with open(file, 'r') as fh:
