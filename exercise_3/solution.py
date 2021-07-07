@@ -25,7 +25,7 @@ def count_words_threading(arg):
     """Function for counting words in files using threading and a queue"""
 
     def count_words(q, filename):
-        """Inner function called in thread worker object"""
+        """Inner function called in thread worker object to count words in file"""
         file = q.get()
         if os.path.isfile(file) == True:
             with open(file, 'r') as fh:
@@ -48,8 +48,8 @@ def count_words_threading(arg):
         if os.path.isfile(file) == True:
             file_list.append(file)
 
-    # Instantiate q object and set number of threads based on length of.
-    # file_list
+    # Instantiate q object and set number of threads based on length of
+    # file_list.
     q = queue.Queue(maxsize=0)
     num_threads = len(file_list)
 
@@ -76,7 +76,7 @@ def count_words_threading(arg):
     # Block until all tasks are done.
     q.join()
 
-    # Now determine total number of words in all files after thread processing
+    # Determine total number of words in all files after thread processing
     # has finished.
     for int in words_threaded_list:
         words += int
