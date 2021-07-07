@@ -7,6 +7,7 @@ from threading import Thread
 
 def count_words_sequential(arg):
     """Function for counting words in files sequentially"""
+
     words = 0
     for file in glob.glob(arg):
         if os.path.isfile(file) == True:
@@ -26,6 +27,7 @@ def count_words_threading(arg):
 
     def count_words(q, filename):
         """Inner function called in thread worker object to count words in file"""
+        
         file = q.get()
         if os.path.isfile(file) == True:
             with open(file, 'r') as fh:
@@ -85,6 +87,7 @@ def count_words_threading(arg):
 
 def main():
     """Main function"""
+
     ### TESTING START
     dir = '/Users/jeff/Documents/GitHub/python_class_2021_B2/exercise_3/'
     files = '*.txt'
