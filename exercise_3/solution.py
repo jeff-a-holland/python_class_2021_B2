@@ -22,7 +22,7 @@ def count_words_sequential(arg):
 
 
 def count_words_threading(arg):
-    """Function for counting words in files using threading and a queue"""
+    """Outer function for counting words in files using threading and a queue"""
 
     def count_words(q, filename):
         """Inner function called in thread worker object to count words in file"""
@@ -33,7 +33,7 @@ def count_words_threading(arg):
                 for line in fh:
                     line = line.rstrip('\n')
                     words_list = line.split()
-                    # Add count of each line in each file to a list. We'll sum
+                    # Add count of each line in each file to a list. Will sum
                     # them later.
                     words_threaded_list.append(len(words_list))
         q.task_done()
@@ -43,13 +43,12 @@ def count_words_threading(arg):
     words_threaded_list = []
     file_list = []
 
-    # Build file_list with names of files to count words in.
+    # Build file_list with path/name of files to count words in.
     for file in glob.glob(arg):
         if os.path.isfile(file) == True:
             file_list.append(file)
 
-    # Instantiate q object and set number of threads based on length of
-    # file_list.
+    # Create q object and set number of threads based on length of file_list.
     q = queue.Queue(maxsize=0)
     num_threads = len(file_list)
 
@@ -69,7 +68,7 @@ def count_words_threading(arg):
     for num in range(num_threads):
         filename = file_list[num]
         worker = Thread(target=count_words, args=(q, filename,))
-        print(f'      Thread {num} worker is: {worker}\n')
+        print(f'      Thread {num} worker is: {worker}')
         worker.setDaemon(True)
         worker.start()
 
@@ -85,14 +84,15 @@ def count_words_threading(arg):
     return(words)
 
 def main():
-
+    """Main function"""
     ### TESTING START
     dir = '/Users/jeff/Documents/GitHub/python_class_2021_B2/exercise_3/'
     files = '*.txt'
     arg = dir + files
+    ### TESTING END
+
     count_words_sequential(arg)
     count_words_threading(arg)
-    ### TESTING END
 
 if __name__ == '__main__':
     main()
