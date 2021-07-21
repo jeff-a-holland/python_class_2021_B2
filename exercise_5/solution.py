@@ -44,6 +44,13 @@ NOTES:
                 fh.write(f'line_{cntr}\n')
             cntr += 1
 
+    ### Determine lines in existing local file supplied as an arg instead of
+    ### the auto-generated "tmpfile"
+    if args.filename[0] != 'tmpfile':
+        with open(args.filename[0], 'r') as fh:
+            file_list = fh.readlines()
+            num_lines = len(file_list)
+
     ### Determine number of lines requested from start and end arguments and
     ### print them from the <filename> if there are enough lines. Otherwise,
     ### error out.
