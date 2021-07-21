@@ -44,8 +44,9 @@ NOTES:
                 fh.write(f'line_{cntr}\n')
             cntr += 1
 
-    ### Determine number of lines requested from LINES argument and print them
-    ### from the tmpfile if there are enough lines. Otherwise, error out.
+    ### Determine number of lines requested from start and end arguments and
+    ### print them from the <filename> if there are enough lines. Otherwise,
+    ### error out.
     if args.start + args.end <= num_lines:
         print(f'\nPrinting {args.start} line(s) from head and {args.end} line(s)'
               f' from tail of the "{args.filename[0]}" file.\nUsing the -s and '
