@@ -9,22 +9,26 @@ def main():
     ###Configure command line options using argparse
     parser = argparse.ArgumentParser(formatter_class=\
                                      argparse.RawTextHelpFormatter)
-    parser.add_argument('--lines', '-l', nargs='?', const=1, type=int, default=3,
-                        help=textwrap.dedent('''
+    parser.add_argument('--start', '-s', nargs='?', const=1, type=int, default=3)
+    parser.add_argument('--end', '-e', nargs='?', const=1, type=int, default=3)
+    parser.add_argument('filename', nargs='+', help=textwrap.dedent('''
 NOTES:
-- Enter the number of lines that you want to print from the beginning (head)
-  and from the end (tail) of the auto-generated file using "-l <number>" or
-  "--lines <number>".
+- Enter the positional required argument "filename". You can enter the name
+  of and existing file in the current directory, or "tmpfile" which is
+  auto-generated with a default of 100 lines.
+- Enter the optional argument for the number of lines to print from the
+  beginning (head) of the file (-s <int> or --start <int>).
+- Enter the optional argument for the number of lines to print from the
+  end (tail) of the file (-e <int> or --end <int>).
 
-- For example: ./solution.py --lines 4
+- For example: ./solution.py tmpfile -s 2 -e 2
                OR
-               ./solution.py -l 4
+               ./solution.py tmpfile
 
-- If no value is given for LINES, a default of 3 will be used.
+- If no value is given for --start and/or --end, a default of 3 will be used.
 
-- Use -h or --help for help info as noted above.
+- Use -h or --help for help info as noted above.'''))
 
-  '''))
     args = parser.parse_args()
 
     ### Create a file to run parse head and tail lines from
@@ -42,15 +46,21 @@ NOTES:
 
     ### Determine number of lines requested from LINES argument and print them
     ### from the tmpfile if there are enough lines. Otherwise, error out.
-    if args.lines * 2 <= num_lines:
-        print(f'\nPrinting {args.lines} lines from head and tail of '
-              'the auto-generated file "tmpfile".\nUsing the LINES argument '
-              'value, or the default value "3" if one was not given...\n')
-        with open('./tmpfile', 'r') as fh:
-            file = fh.read()
-            file_list = file.split('\n')
-        head_list = file_list[:args.lines]
-        tail_list =  file_list[-args.lines:]
+    if args.start + args.end <= num_lines:
+        print(f'\nPrinting {args.start} line(s) from head and {args.end} line(s)'
+              f' from tail of the "{args.filename[0]}" file.\nUsing the -s and '
+              '-e arguments value, or the default value "3" if either was not '
+              'given...\n')
+
+        with open(args.filename[0], 'r') as fh:
+            file_list = fh.readlines()
+
+        for index,value in enumerate(file_list):
+            value = value.replace('\n', '')
+            file_list[index] = value
+
+        head_list = file_list[:args.start]
+        tail_list =  file_list[-args.end:]
         for value in head_list:
             print(value)
         print('...')
@@ -59,8 +69,7 @@ NOTES:
         print('\n')
 
     else:
-        raise ValueError(f'\n\nCannot print {args.lines*2} lines from a file '
-                         f'with {num_lines} lines.\n\nExiting!!\n')
+        raise ValueError(f'\n\nCannot print {args.start + args.end} lines from a file with {num_lines} lines.\n\nExiting!!\n')
 
 if __name__ == '__main__':
     main()
