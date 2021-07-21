@@ -14,7 +14,7 @@ def main():
     parser.add_argument('filename', nargs='+', help=textwrap.dedent('''
 NOTES:
 - Enter the positional required argument "filename". You can enter the name
-  of and existing file in the current directory, or "tmpfile" which is
+  of an existing file in the current directory, or "tmpfile" which is
   auto-generated with a default of 100 lines.
 - Enter the optional argument for the number of lines to print from the
   beginning (head) of the file (-s <int> or --start <int>).
