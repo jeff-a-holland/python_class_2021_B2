@@ -31,7 +31,7 @@ NOTES:
 
     args = parser.parse_args()
 
-    ### Create a file to run parse head and tail lines from
+    ### Create a file to parse head and tail lines from
     num_lines = 100
     cntr = 1
     print(f'\nCreating a file with {num_lines} lines called "tmpfile" in the '
