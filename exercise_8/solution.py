@@ -21,6 +21,8 @@ def str_range(start, end, *args):
     start_num = [ord(c) for c in unicodedata.normalize('NFC', start)]
     end_num = [ord(c) for c in unicodedata.normalize('NFC', end)]
 
+    # Determine the number of chars betwen the start and end args (including the
+    # start and end chars) and the step_val arg (if supplied)
     if step_val % 2 == 0:
         length = abs(int((abs(start_num[0] - end_num[0]) + 2) / step_val))
     else:
@@ -47,4 +49,4 @@ str_range('a', 'c', 2)
 str_range('c', 'a', -2)
 ## prints: TypeError: Step value cannot be greater than the cardinality of the
 ##                    chars between start char and end char
-#str_range('c', 'a', 3)  #Commenting out for pytest. Uncomment to test standalone.
+#str_range('c', 'a', 3)  #Commenting out for pytest. Uncomment to test standalone
