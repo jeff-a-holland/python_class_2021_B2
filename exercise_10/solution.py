@@ -36,7 +36,7 @@ def get_file_info(pathname):
 def main():
     """Main function for get_file_info function"""
 
-    ## Test on current workind directory
+    ## Test on current working directory
     get_file_info('.')
 
 if __name__ == '__main__':
