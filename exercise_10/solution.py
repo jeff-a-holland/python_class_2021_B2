@@ -13,12 +13,13 @@ def get_file_info(pathname):
         file_path = os.path.join(pathname, file)
 
         if os.path.isfile(file_path):
+            ## Compute timestamp of when file as last changed (in local time)
             mtime = os.stat(file_path).st_mtime
             timestamp_str = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d-%H:%M')
-            ## Compute sha1 hash of file, reading in 2^16 bytes at a time in case
-            ## the file is too large for memory
-            sha1sum = hashlib.sha1()
 
+            ## Compute sha1 hash of file, reading in 2^16 bytes at a time in
+            ## binary mode in case the file is too large for memory
+            sha1sum = hashlib.sha1()
             with open(file_path, 'rb') as source:
                 block = source.read(2**16)
                 while len(block) != 0:
@@ -34,7 +35,7 @@ def get_file_info(pathname):
 
 def main():
     """Main function for get_file_info function"""
-    
+
     ## Test on current workind directory
     get_file_info('.')
 
