@@ -8,26 +8,26 @@ from datetime import datetime
 class FileInfo(object):
     """FileInfo class to create object with list of dictionaries"""
     object_list = []
-    def __init__(self, pathname):
-        self.pathname = pathname
+    def __init__(self, test_dir):
+        self.test_dir = test_dir
 
     def get_file_info(self):
         self.filename = ''
         self.timestamp = ''
         self.sha1 = ''
 
-        for file in os.listdir(self.pathname):
-            file_path = os.path.join(self.pathname, file)
+        for file in os.listdir(self.test_dir):
+            file_path = os.path.join(self.test_dir, file)
 
             if os.path.isfile(file_path) and not file_path.endswith('FileList'):
-                ## Compute timestamp of when file as last changed (in local time)
+                # Compute timestamp of when file as last changed (in local time)
                 self.filename = file_path
                 mtime = os.stat(file_path).st_mtime
                 self.timestamp = datetime.fromtimestamp(mtime) \
-                                         .strftime('%Y-%m-%d-%H:%M')
+                    .strftime('%Y-%m-%d-%H:%M')
 
-                ## Compute sha1 hash of file, reading in 2^16 bytes at a time in
-                ## binary mode in case the file is too large for memory
+                # Compute sha1 hash of file, reading in 2^16 bytes at a time in
+                # binary mode in case the file is too large for memory
                 sha1sum = hashlib.sha1()
                 with open(file_path, 'rb') as source:
                     block = source.read(2**16)
@@ -35,8 +35,8 @@ class FileInfo(object):
                         sha1sum.update(block)
                         block = source.read(2**16)
                 self.sha1 = sha1sum.hexdigest()
-                FileInfo.object_list.append({'filename': self.filename, \
-                                             'timestamp': self.timestamp, \
+                FileInfo.object_list.append({'filename': self.filename,
+                                             'timestamp': self.timestamp,
                                              'sha1': self.sha1})
 
 class FileList(FileInfo):
@@ -45,7 +45,7 @@ class FileList(FileInfo):
     that remain unchanged will not be reported upon."""
     pickle_list = []
     pickled_obj = b''
-    def scan(self):
+    def scan(self):  # sourcery skip: extract-duplicate-method
         for d in FileInfo.object_list:
             fullfilepath = (d['filename'])
             filedir = os.path.dirname(d['filename'])
@@ -53,18 +53,18 @@ class FileList(FileInfo):
             timechanged = (d['timestamp'])
             sha1 = (d['sha1'])
             timeaccessed = datetime.now().strftime('%Y-%m-%d-%H:%M')
-            info_dict = {'fullfilepath': fullfilepath, 'filedir': filedir, \
-                         'filename': filename, 'timechanged': timechanged, \
+            info_dict = {'fullfilepath': fullfilepath, 'filedir': filedir,
+                         'filename': filename, 'timechanged': timechanged,
                          'sha1': sha1, 'timeaccessed': timeaccessed}
             FileList.pickle_list.append(info_dict)
 
         FileList.pickled_obj = pickle.dumps(FileList.pickle_list)
-        filelist_fullpath = test_dir + 'FileList'
+        filelist_fullpath = self.test_dir + 'FileList'
         if os.path.isfile(filelist_fullpath) == False:
             print('\n################################################################')
             print('Pickled file does not exist. Creating pickle file "FileList" in:')
             print('################################################################')
-            print('\n', test_dir)
+            print('\n', self.test_dir)
             with open(filelist_fullpath, 'wb') as fh:
                 fh.write(FileList.pickled_obj)
         else:
@@ -74,7 +74,7 @@ class FileList(FileInfo):
             print('Skipping creation...')
 
     def rescan(self):
-        filelist_fullpath = test_dir + 'FileList'
+        filelist_fullpath = self.test_dir + 'FileList'
         with open(filelist_fullpath, 'rb') as fh:
             data = fh.read()
             unpickled_object = pickle.loads(data)
@@ -90,24 +90,24 @@ class FileList(FileInfo):
         added_list = []
         removed_list = []
         print('###############################################################'
-               '######################')
+              '######################')
         print('File changes detected since initial file checksum and pickled '
               'file baseline creation:')
         print('###############################################################'
-               '######################\n')
+              '######################\n')
         for d in unpickled_object:
             fullfilepath_orig = d['fullfilepath']
             pickled_files_list.append(fullfilepath_orig)
-            for file in os.listdir(test_dir):
-                fullfilepath_new = os.path.join(test_dir, file)
+            for file in os.listdir(self.test_dir):
+                fullfilepath_new = os.path.join(self.test_dir, file)
                 if os.path.isfile(fullfilepath_new) and not fullfilepath_new.endswith('FileList'):
                     disk_files_list.append(fullfilepath_new)
                     sha1_new = hashlib.sha1(open(fullfilepath_new, 'rb').read()).hexdigest()
                     if fullfilepath_orig == fullfilepath_new and \
-                        d['sha1'] == sha1_new:
+                            d['sha1'] == sha1_new:
                         print(f'exiting file "{fullfilepath_orig}" unchanged')
                     elif fullfilepath_orig == fullfilepath_new and \
-                        d['sha1'] != sha1_new:
+                            d['sha1'] != sha1_new:
                         changed_list.append(fullfilepath_orig)
                         print(f'existing file "{fullfilepath_orig}" CHANGED')
 
@@ -128,12 +128,16 @@ class FileList(FileInfo):
         print(results_dict, '\n')
         return results_dict
 
-## Testing directory. Modify as necessary.
-test_dir = '/Users/jeff/Documents/GitHub/python_class_2021_B2/exercise_11/'
+def main():
+    # Testing directory. Modify as necessary.
+    test_dir = '/Users/jeff/Documents/GitHub/python_class_2021_B2/exercise_11/'
 
-fi = FileInfo(test_dir)
-fi.get_file_info()
+    fi = FileInfo(test_dir)
+    fi.get_file_info()
 
-fl = FileList(test_dir)
-fl.scan()
-fl.rescan()
+    fl = FileList(test_dir)
+    fl.scan()
+    fl.rescan()
+
+if __name__ == '__main__':
+    main()
