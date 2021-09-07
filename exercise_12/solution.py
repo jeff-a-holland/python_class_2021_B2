@@ -5,7 +5,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-def check_dir_exists(directory):
+def check_dir(directory):
 	if os.path.isdir(directory):
 		if directory.endswith('/'):
 			pass
@@ -28,7 +28,7 @@ def scan():
 	"""Scan function that scans the directory provided as an argument and create
 	the hash database 'FileList on disk"""
 	directory = request.args['directory']
-	directory = check_dir_exists(directory)
+	directory = check_dir(directory)
 
 	results_list = []
 	if os.path.isdir(directory):
@@ -49,7 +49,7 @@ def rescan():
 	"""Rescan function that loads pickled hash database from disk, called
 	FileList"""
 	directory = request.args['directory']
-	directory = check_dir_exists(directory)
+	directory = check_dir(directory)
 	if os.path.isdir(directory):
 		result = '<p>Rescanning the following directory using the pickled ' \
 					 f'"FileList" file on disk:<br><br>{directory}</p>'
