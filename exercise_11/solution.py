@@ -45,7 +45,7 @@ class FileList(FileInfo):
     that remain unchanged will not be reported upon."""
     pickle_list = []
     pickled_obj = b''
-    def scan(self):  # sourcery skip: extract-duplicate-method
+    def scan(self):
         for d in FileInfo.object_list:
             fullfilepath = (d['filename'])
             filedir = os.path.dirname(d['filename'])
