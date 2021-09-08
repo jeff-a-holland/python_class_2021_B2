@@ -1,6 +1,7 @@
 #!/Users/jeff/.pyenv/shims/python
 
 import os
+import json
 import hashlib
 import pickle
 from datetime import datetime
@@ -9,11 +10,10 @@ from flask import Flask, request
 app = Flask(__name__)
 
 def check_dir(directory):
-	if os.path.isdir(directory):
-		if directory.endswith('/'):
-			pass
-		else:
-			directory += '/'
+	if directory.endswith('/'):
+		pass
+	else:
+		directory += '/'
 	return directory
 
 class FileInfo(object):
@@ -21,6 +21,8 @@ class FileInfo(object):
 	object_list = []
 	file_list = []
 	target_dir = ''
+	pickle_file_status = ''
+
 	def __init__(self, return_list, directory):
 		self.directory = directory
 		self.return_list = return_list
@@ -51,7 +53,6 @@ class FileInfo(object):
 				FileInfo.object_list.append({'filename': self.filename,
 											 'timestamp': self.timestamp,
 											 'sha1': self.sha1})
-		#print(FileInfo.object_list)
 	def scan(self):
 		self.pickle_list = []
 		self.pickled_obj = b''
@@ -74,6 +75,8 @@ class FileInfo(object):
 			print('Pickled file does not exist. Creating pickle file "FileList" in:')
 			print('################################################################')
 			print('\n', FileInfo.target_dir)
+			FileInfo.pickle_file_status = '<h3>Pickled file does NOT exist. ' \
+					                      'Creating it...</h3>'
 			with open(filelist_fullpath, 'wb') as fh:
 				fh.write(self.pickled_obj)
 		else:
@@ -81,21 +84,32 @@ class FileInfo(object):
 			print('Pickle file "FileList" already exists.')
 			print('######################################')
 			print('Skipping creation...')
+			FileInfo.pickle_file_status = '<h3>Pickled file already exists. ' \
+										  'Skipping creation...</h3>'
 
 class FileList(FileInfo):
 	"""FileList class that subclasses FileInfo to determine if any files were
 	changed, removed, or added (based on existence or sha1 hash value). Any files
 	that remain unchanged will not be reported upon."""
+	exception = 'Pickled hash database "FileList" AND/OR the directory given ' \
+			    'as an argument does not exist.<br><br>Run a scan first if the ' \
+		        'directory is valid, otherwise use a valid directory.'
+
+	def __init__(self, directory):
+		self.directory = directory
 
 	def rescan(self):
-		filelist_fullpath = self.test_dir + 'FileList'
-		with open(filelist_fullpath, 'rb') as fh:
-			data = fh.read()
-			unpickled_object = pickle.loads(data)
-			print('\n#####################################################')
-			print('Pickled file "FileList" contents after unpickling is:')
-			print('#####################################################\n')
-			print(unpickled_object, '\n')
+		filelist_fullpath = self.directory + 'FileList'
+		try:
+			with open(filelist_fullpath, 'rb') as fh:
+				data = fh.read()
+				unpickled_object = pickle.loads(data)
+				print('\n#####################################################')
+				print('Pickled file "FileList" contents after unpickling is:')
+				print('#####################################################\n')
+				print(unpickled_object, '\n')
+		except:
+			raise Exception(f'{FileList.exception}')
 
 		pickled_files_list = []
 		disk_files_list = []
@@ -112,8 +126,8 @@ class FileList(FileInfo):
 		for d in unpickled_object:
 			fullfilepath_orig = d['fullfilepath']
 			pickled_files_list.append(fullfilepath_orig)
-			for file in os.listdir(self.test_dir):
-				fullfilepath_new = os.path.join(self.test_dir, file)
+			for file in os.listdir(self.directory):
+				fullfilepath_new = os.path.join(self.directory, file)
 				if os.path.isfile(fullfilepath_new) and not fullfilepath_new.endswith('FileList'):
 					disk_files_list.append(fullfilepath_new)
 					sha1_new = hashlib.sha1(open(fullfilepath_new, 'rb').read()).hexdigest()
@@ -169,9 +183,7 @@ def scan():
 		fi = FileInfo(results_list, directory)
 		fi.get_file_info()
 		fi.scan()
-		result = '<h3>Pickling the following files and creating file hash database'\
-				 ' on disk:</h3>' + '<br>'.join(results_list)
-
+		result = f'{FileInfo.pickle_file_status} Files are:<br><br>' + '<br>'.join(results_list)
 	else:
 		result = f'<h2>ERROR</h2><h3>{directory}<br><br> is NOT a directory.' \
 				 '<h3>Please try again with a directory path that exists.</h3>'
@@ -184,9 +196,18 @@ def rescan():
 	FileList"""
 	directory = request.args['directory']
 	directory = check_dir(directory)
-	if os.path.isdir(directory):
-		result = '<p>Rescanning the following directory using the pickled ' \
-					 f'"FileList" file on disk:<br><br>{directory}</p>'
+	if not os.path.isfile(directory + 'FileList'):
+		return FileList.exception
+	elif os.path.isdir(directory):
+		fl = FileList(directory)
+		rescan_output_dict = fl.rescan()
+		rescan_output = json.dumps(rescan_output_dict, indent = 4)
+		print(rescan_output)
+		rescan_output = f'<pre>{rescan_output}</pre>'
+		result = '<h3>Rescanning the following directory using the pickled ' \
+				 f'"FileList" file on disk:</h3>{directory}<br><br>' + \
+		     f'<h3>Changes/Addition/Deletions JSON Output:</h3>' \
+			 f'{rescan_output}'
 	else:
 		result = f'<h2>ERROR</h2><h3>{directory}<br><br> is NOT a directory.' \
 				 '<h3>Please try again with a directory path that exists.</h3>'
@@ -199,3 +220,4 @@ def main():
 
 if __name__ == "__main__":
 	app.run()
+###
