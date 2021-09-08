@@ -91,9 +91,10 @@ class FileList(FileInfo):
 	"""FileList class that subclasses FileInfo to determine if any files were
 	changed, removed, or added (based on existence or sha1 hash value). Any files
 	that remain unchanged will not be reported upon."""
-	exception = 'Pickled hash database "FileList" AND/OR the directory given ' \
-			    'as an argument does not exist.<br><br>Run a scan first if the ' \
-		        'directory is valid, otherwise use a valid directory.'
+	exception = '<h3>Pickled hash database "FileList" AND/OR the directory given ' \
+			    'as an argument do/does not exist.</h3>Run a scan first using the '\
+				'"scan" endpoint if the directory is valid, otherwise use a ' \
+			    'valid directory.'
 
 	def __init__(self, directory):
 		self.directory = directory
@@ -158,11 +159,16 @@ class FileList(FileInfo):
 
 @app.route('/')
 def home():
-	display_str = '<h1>Home page for solution.py. Visit either:<br><br></h1>' + \
+	display_str = '<h2>Home page for the "Tripwire" web application ' + \
+			      '(solution.py):</h2><h3>UI/Browser Usage:</h3>' + \
 				  'http://127.0.0.1:5000/scan?directory=DIRPATH<br><br>' + \
-				  'OR<br><br>' + \
+				  '&nbsp&nbspOR<br><br>' + \
 				  'http://127.0.0.1:5000/rescan?directory=DIRPATH<br><br>' + \
-				  'where DIRPATH is diretory path such as: /Users/'
+				  '&nbsp&nbspWHERE<br><br>DIRPATH is diretory path such as: ' + \
+			      '/Users/jeff<br><br><h3>For example:</h3>&nbsp&nbsp&nbsp&nbsp' + \
+				  '&nbsphttp://127.0.0.1:5000/scan?directory=/Users/jeff<br><br>' + \
+		          '<h3>Start appliction from the CLI as follows:</h3>' + \
+		          '&nbsp&nbsp&nbsp./solution.py'
 	return display_str
 
 
@@ -220,4 +226,5 @@ def main():
 
 if __name__ == "__main__":
 	app.run()
+###
 ###
