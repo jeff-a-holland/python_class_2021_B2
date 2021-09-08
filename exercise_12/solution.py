@@ -26,7 +26,7 @@ def home():
 @app.route('/scan')
 def scan():
 	"""Scan function that scans the directory provided as an argument and create
-	the hash database 'FileList on disk"""
+	the hash database 'FileList' on disk"""
 	directory = request.args['directory']
 	directory = check_dir(directory)
 
