@@ -174,8 +174,10 @@ def home():
 				  '&nbsp&nbspWHERE<br><br>DIRPATH is diretory path such as: ' + \
 			      '/Users/jeff<br><br><h3>For example:</h3>&nbsp&nbsp&nbsp&nbsp' + \
 				  '&nbsphttp://127.0.0.1:5000/scan?directory=/Users/jeff<br><br>' + \
-		          '<h3>Start appliction from the CLI as follows:</h3>' + \
-		          '&nbsp&nbsp&nbsp./solution.py'
+		          '<h3>Start application from the CLI as follows:</h3>' + \
+		          '&nbsp&nbsp&nbsp./solution.py<br><h3>NOTE:</h3>Make sure you '+ \
+		          'have write access to the directory so the pickled FileList ' + \
+		          'file can be created'
 	return display_str
 
 
