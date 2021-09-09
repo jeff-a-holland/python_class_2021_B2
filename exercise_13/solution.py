@@ -91,10 +91,6 @@ class FileList(FileInfo):
 	"""FileList class that subclasses FileInfo to determine if any files were
 	changed, removed, or added (based on existence or sha1 hash value). Any files
 	that remain unchanged will not be reported upon."""
-	exception = '<h3>Pickled hash database "FileList" AND/OR the directory given ' \
-			    'as an argument do/does not exist.</h3>Run a scan first using the '\
-				'"scan" endpoint if the directory is valid, otherwise use a ' \
-			    'valid directory.'
 
 	def __init__(self, directory):
 		self.directory = directory
@@ -110,7 +106,7 @@ class FileList(FileInfo):
 				print('#####################################################\n')
 				print(unpickled_object, '\n')
 		except:
-			raise Exception(f'{FileList.exception}')
+			raise Exception('Pickled file "FileList" does not exist. Exiting...')
 
 		pickled_files_list = []
 		disk_files_list = []
@@ -145,6 +141,7 @@ class FileList(FileInfo):
 				removed_list.append(file)
 				print(f'previous file "{file}" was REMOVED')
 				break
+
 		for file in disk_files_list:
 			if file not in pickled_files_list:
 				added_list.append(file)
@@ -190,6 +187,7 @@ def scan():
 		fi.get_file_info()
 		fi.scan()
 		result = f'{FileInfo.pickle_file_status} Files are:<br><br>' + '<br>'.join(results_list)
+
 	else:
 		result = f'<h2>ERROR</h2><h3>{directory}<br><br> is NOT a directory.' \
 				 '<h3>Please try again with a directory path that exists.</h3>'
@@ -200,10 +198,18 @@ def scan():
 def rescan():
 	"""Rescan function that loads pickled hash database from disk, called
 	FileList"""
+
 	directory = request.args['directory']
 	directory = check_dir(directory)
+	exception = '<h3>Pickled hash database "FileList" AND/OR the directory given ' \
+				'as an argument do/does not exist.</h3>Run a scan first using the ' \
+				'"scan" endpoint if the directory is valid, otherwise use a ' \
+				'valid directory.<br><h3>Directory used was:</h3>'\
+			    f'&nbsp&nbsp&nbsp&nbsp{directory}'
+
 	if not os.path.isfile(directory + 'FileList'):
-		return FileList.exception
+		return exception
+
 	elif os.path.isdir(directory):
 		fl = FileList(directory)
 		rescan_output_dict = fl.rescan()
@@ -212,11 +218,8 @@ def rescan():
 		rescan_output = f'<pre>{rescan_output}</pre>'
 		result = '<h3>Rescanning the following directory using the pickled ' \
 				 f'"FileList" file on disk:</h3>{directory}<br><br>' + \
-		     f'<h3>Changes/Addition/Deletions JSON Output:</h3>' \
-			 f'{rescan_output}'
-	else:
-		result = f'<h2>ERROR</h2><h3>{directory}<br><br> is NOT a directory.' \
-				 '<h3>Please try again with a directory path that exists.</h3>'
+		         '<h3>Changes/Addition/Deletions JSON Output:</h3>' \
+			     f'{rescan_output}'
 	return result
 
 
