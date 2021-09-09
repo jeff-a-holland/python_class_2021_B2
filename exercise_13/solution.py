@@ -10,6 +10,8 @@ from flask import Flask, request
 app = Flask(__name__)
 
 def check_dir(directory):
+	"""Make sure directory given as an argument in the URL ends in '/'"""
+
 	if directory.endswith('/'):
 		pass
 	else:
@@ -18,6 +20,7 @@ def check_dir(directory):
 
 class FileInfo(object):
 	"""FileInfo class to create object with list of dictionaries"""
+
 	object_list = []
 	file_list = []
 	target_dir = ''
@@ -30,6 +33,8 @@ class FileInfo(object):
 		FileInfo.target_dir = self.directory
 
 	def get_file_info(self):
+		"""Get the file info from the pickled hash database"""
+
 		self.filename = ''
 		self.timestamp = ''
 		self.sha1 = ''
@@ -54,6 +59,10 @@ class FileInfo(object):
 											 'timestamp': self.timestamp,
 											 'sha1': self.sha1})
 	def scan(self):
+		"""Scan method for creating pickled FileList hash database, or for
+		reading the existing FileList file. Located here instead of FileList
+		class"""
+
 		self.pickle_list = []
 		self.pickled_obj = b''
 		for d in FileInfo.object_list:
@@ -156,6 +165,7 @@ class FileList(FileInfo):
 
 @app.route('/')
 def home():
+	"""Web app home page function with usage"""
 	display_str = '<h2>Home page for the "Tripwire" web application ' + \
 			      '(solution.py):</h2><h3>UI/Browser Usage:</h3>' + \
 				  'http://127.0.0.1:5000/scan?directory=DIRPATH<br><br>' + \
