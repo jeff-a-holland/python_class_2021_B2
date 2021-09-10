@@ -11,14 +11,12 @@ app = Flask(__name__)
 
 def check_dir(directory):
 	"""Make sure directory given as an argument in the URL ends in '/'"""
-
 	if not directory.endswith('/'):
 		directory += '/'
 	return directory
 
 class FileInfo(object):
 	"""FileInfo class to create object with list of dictionaries"""
-
 	object_list = []
 	file_list = []
 	target_dir = ''
@@ -32,7 +30,6 @@ class FileInfo(object):
 
 	def get_file_info(self):
 		"""Get the file info from the pickled hash database"""
-
 		self.filename = ''
 		self.timestamp = ''
 		self.sha1 = ''
@@ -60,7 +57,6 @@ class FileInfo(object):
 		"""Scan method for creating pickled FileList hash database, or for
 		reading the existing FileList file. Located here instead of FileList
 		class"""
-
 		self.pickle_list = []
 		self.pickled_obj = b''
 		for d in FileInfo.object_list:
@@ -78,20 +74,12 @@ class FileInfo(object):
 		self.pickled_obj = pickle.dumps(self.pickle_list)
 		filelist_fullpath = FileInfo.target_dir + 'FileList'
 		if os.path.isfile(filelist_fullpath) == False:
-			print('\n################################################################')
-			print('Pickled file does not exist. Creating pickle file "FileList" in:')
-			print('################################################################')
-			print('\n', FileInfo.target_dir)
 			FileInfo.pickle_file_status = '<h3>Pickled file does NOT exist. ' \
 					                      'Creating it...</h3>'
 			with open(filelist_fullpath, 'wb') as fh:
 				fh.write(self.pickled_obj)
 
 		else:
-			print('\n######################################')
-			print('Pickle file "FileList" already exists.')
-			print('######################################')
-			print('Skipping creation...')
 			FileInfo.pickle_file_status = '<h3>Pickled file already exists. ' \
 										  'Skipping creation...</h3>'
 
@@ -99,7 +87,6 @@ class FileList(FileInfo):
 	"""FileList class that subclasses FileInfo to determine if any files were
 	changed, removed, or added (based on existence or sha1 hash value). Any files
 	that remain unchanged will not be reported upon."""
-
 	def __init__(self, directory):
 		self.directory = directory
 
@@ -109,10 +96,6 @@ class FileList(FileInfo):
 			with open(filelist_fullpath, 'rb') as fh:
 				data = fh.read()
 				unpickled_object = pickle.loads(data)
-				print('\n#####################################################')
-				print('Pickled file "FileList" contents after unpickling is:')
-				print('#####################################################\n')
-				print(unpickled_object, '\n')
 
 		except:
 			raise Exception('Pickled file "FileList" does not exist. Exiting...')
@@ -123,23 +106,22 @@ class FileList(FileInfo):
 		changed_list = []
 		added_list = []
 		removed_list = []
-		print('###############################################################'
-			  '######################')
-		print('File changes detected since initial file checksum and pickled '
-			  'file baseline creation:')
-		print('###############################################################'
-			  '######################\n')
+
 		for d in unpickled_object:
 			fullfilepath_orig = d['fullfilepath']
 			pickled_files_list.append(fullfilepath_orig)
+
 			for file in os.listdir(self.directory):
 				fullfilepath_new = os.path.join(self.directory, file)
+
 				if os.path.isfile(fullfilepath_new) and not fullfilepath_new.endswith('FileList'):
 					disk_files_list.append(fullfilepath_new)
 					sha1_new = hashlib.sha1(open(fullfilepath_new, 'rb').read()).hexdigest()
+
 					if fullfilepath_orig == fullfilepath_new and \
 							d['sha1'] == sha1_new:
 						print(f'exiting file "{fullfilepath_orig}" unchanged')
+
 					elif fullfilepath_orig == fullfilepath_new and \
 							d['sha1'] != sha1_new:
 						changed_list.append(fullfilepath_orig)
@@ -158,16 +140,11 @@ class FileList(FileInfo):
 				break
 
 		results_dict = {'added': added_list, 'removed': removed_list, 'changed': changed_list}
-		print('\n######################################')
-		print('results_dict with all file changes is:')
-		print('######################################\n')
-		print(results_dict, '\n')
 		return results_dict
 
 @app.route('/')
 def home():
 	"""Web app home page function with usage"""
-
 	display_str = '<h2>Home page for the "Tripwire" web application ' + \
 			      '(solution.py):</h2><h3>UI/Browser Usage:</h3>' + \
 				  'http://127.0.0.1:5000/scan?directory=DIRPATH<br><br>' + \
@@ -187,7 +164,6 @@ def home():
 def scan():
 	"""Scan function that scans the directory provided as an argument and create
 	the hash database 'FileList' on disk"""
-
 	directory = request.args['directory']
 	directory = check_dir(directory)
 
@@ -213,7 +189,6 @@ def scan():
 def rescan():
 	"""Rescan function that loads pickled hash database from disk, called
 	FileList"""
-
 	directory = request.args['directory']
 	directory = check_dir(directory)
 	exception = '<h3>Pickled hash database "FileList" AND/OR the directory given ' \
@@ -240,7 +215,6 @@ def rescan():
 
 def main():
 	"""Main function for web app"""
-	
 	app.run(debug=True, port=5000)
 
 if __name__ == "__main__":
