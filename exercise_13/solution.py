@@ -88,6 +88,7 @@ class FileInfo(object):
 					                      'Creating it...</h3>'
 			with open(filelist_fullpath, 'wb') as fh:
 				fh.write(self.pickled_obj)
+
 		else:
 			print('\n######################################')
 			print('Pickle file "FileList" already exists.')
@@ -114,6 +115,7 @@ class FileList(FileInfo):
 				print('Pickled file "FileList" contents after unpickling is:')
 				print('#####################################################\n')
 				print(unpickled_object, '\n')
+
 		except:
 			raise Exception('Pickled file "FileList" does not exist. Exiting...')
 
@@ -156,6 +158,7 @@ class FileList(FileInfo):
 				added_list.append(file)
 				print(f'new file "{file}" was ADDED')
 				break
+				
 		results_dict = {'added': added_list, 'removed': removed_list, 'changed': changed_list}
 		print('\n######################################')
 		print('results_dict with all file changes is:')
