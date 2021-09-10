@@ -12,9 +12,7 @@ app = Flask(__name__)
 def check_dir(directory):
 	"""Make sure directory given as an argument in the URL ends in '/'"""
 
-	if directory.endswith('/'):
-		pass
-	else:
+	if not directory.endswith('/'):
 		directory += '/'
 	return directory
 
@@ -158,7 +156,7 @@ class FileList(FileInfo):
 				added_list.append(file)
 				print(f'new file "{file}" was ADDED')
 				break
-				
+
 		results_dict = {'added': added_list, 'removed': removed_list, 'changed': changed_list}
 		print('\n######################################')
 		print('results_dict with all file changes is:')
@@ -169,6 +167,7 @@ class FileList(FileInfo):
 @app.route('/')
 def home():
 	"""Web app home page function with usage"""
+
 	display_str = '<h2>Home page for the "Tripwire" web application ' + \
 			      '(solution.py):</h2><h3>UI/Browser Usage:</h3>' + \
 				  'http://127.0.0.1:5000/scan?directory=DIRPATH<br><br>' + \
@@ -188,6 +187,7 @@ def home():
 def scan():
 	"""Scan function that scans the directory provided as an argument and create
 	the hash database 'FileList' on disk"""
+
 	directory = request.args['directory']
 	directory = check_dir(directory)
 
