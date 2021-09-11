@@ -203,9 +203,8 @@ def rescan():
 	elif os.path.isdir(directory):
 		fl = FileList(directory)
 		rescan_output_dict = fl.rescan()
-		rescan_output = json.dumps(rescan_output_dict, indent = 4)
+		rescan_output = f'<pre>{json.dumps(rescan_output_dict, indent = 4)}</pre>'
 		print(f'JSON Output is:\n\n {rescan_output}')
-		rescan_output = f'<pre>{rescan_output}</pre>'
 		result = '<h3>Rescanning the following directory using the pickled ' \
 				 f'"FileList" file on disk:</h3>{directory}<br><br>' + \
 		         '<h3>Changes/Addition/Deletions JSON Output:</h3>' \
