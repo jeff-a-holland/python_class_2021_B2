@@ -18,21 +18,20 @@ def check_dir(directory):
 class FileInfo(object):
 	"""FileInfo class to create object with list of dictionaries"""
 	object_list = []
-	file_list = []
-	target_dir = ''
 	pickle_file_status = ''
 
 	def __init__(self, return_list, directory):
 		self.directory = directory
 		self.return_list = return_list
 		FileInfo.file_list = self.return_list
-		FileInfo.target_dir = self.directory
+		self.target_dir = self.directory
 
 	def get_file_info(self):
 		"""Get the file info from the pickled hash database"""
 		self.filename = ''
 		self.timestamp = ''
 		self.sha1 = ''
+		self.file_list = []
 
 		for file in FileInfo.file_list:
 				# Compute timestamp of when file as last changed (in local time)
@@ -72,7 +71,7 @@ class FileInfo(object):
 			self.pickle_list.append(info_dict)
 
 		self.pickled_obj = pickle.dumps(self.pickle_list)
-		filelist_fullpath = FileInfo.target_dir + 'FileList'
+		filelist_fullpath = self.target_dir + 'FileList'
 		if os.path.isfile(filelist_fullpath) == False:
 			FileInfo.pickle_file_status = '<h3>Pickled file does NOT exist. ' \
 					                      'Creating it...</h3>'
@@ -217,4 +216,4 @@ def main():
 	app.run(debug=True, port=5000)
 
 if __name__ == "__main__":
-	app.run()
+	main()
