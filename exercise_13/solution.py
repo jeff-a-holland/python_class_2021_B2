@@ -23,7 +23,7 @@ class FileInfo(object):
 	def __init__(self, return_list, directory):
 		self.directory = directory
 		self.return_list = return_list
-		FileInfo.file_list = self.return_list
+		self.file_list = self.return_list
 		self.target_dir = self.directory
 
 	def get_file_info(self):
@@ -31,9 +31,8 @@ class FileInfo(object):
 		self.filename = ''
 		self.timestamp = ''
 		self.sha1 = ''
-		self.file_list = []
 
-		for file in FileInfo.file_list:
+		for file in self.file_list:
 				# Compute timestamp of when file as last changed (in local time)
 				self.filename = file
 				mtime = os.stat(file).st_mtime
