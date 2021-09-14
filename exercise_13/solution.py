@@ -144,7 +144,7 @@ class FileList(FileInfo):
 @app.route('/')
 def home():
 	"""Web app home page function with usage"""
-	display_str = '<h2>Home page for the File Integirty Checker web application ' + \
+	display_str = '<h2>Home page for the "Tamperserve" web application ' + \
 			      '(solution.py):</h2><h3>UI/Browser Usage:</h3>' + \
 				  'http://127.0.0.1:5000/scan?directory=DIRPATH<br><br>' + \
 				  '&nbsp&nbspOR<br><br>' + \
