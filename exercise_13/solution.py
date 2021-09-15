@@ -187,6 +187,7 @@ def scan():
 def rescan():
 	"""Rescan function that loads pickled hash database from disk, called
 	FileList"""
+	result = ''
 	directory = request.args['directory']
 	directory = check_dir(directory)
 	exception = '<h3>Pickled hash database "FileList" AND/OR the directory given ' \
