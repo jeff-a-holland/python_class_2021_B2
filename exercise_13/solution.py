@@ -112,7 +112,9 @@ class FileList(FileInfo):
 			for file in os.listdir(self.directory):
 				fullfilepath_new = os.path.join(self.directory, file)
 
-				if os.path.isfile(fullfilepath_new) and not fullfilepath_new.endswith('FileList'):
+				if os.path.isfile(fullfilepath_new) and \
+						not fullfilepath_new.endswith('FileList') and \
+						not fullfilepath_new.endswith('.DS_Store'):
 					disk_files_list.append(fullfilepath_new)
 					sha1_new = hashlib.sha1(open(fullfilepath_new, 'rb').read()).hexdigest()
 
@@ -169,13 +171,15 @@ def scan():
 	if os.path.isdir(directory):
 		for file in os.listdir(directory):
 			file_path = os.path.join(directory, file)
-			if os.path.isfile(file_path) and file != 'FileList':
+			if os.path.isfile(file_path) and file != 'FileList' \
+										 and file != '.DS_Store':
 				results_list.append(file_path)
 
 		fi = FileInfo(results_list, directory)
 		fi.get_file_info()
 		fi.scan()
-		result = f'{FileInfo.pickle_file_status} Files are:<br><br>' + '<br>'.join(results_list)
+		result = f'{FileInfo.pickle_file_status} Files are:<br><br>' + \
+				 '<br>'.join(results_list)
 
 	else:
 		result = f'<h2>ERROR</h2><h3>{directory}<br><br> is NOT a directory.' \
