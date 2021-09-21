@@ -195,7 +195,7 @@ def rescan():
 	directory = request.args['directory']
 	directory = check_dir(directory)
 	exception = '<h3>Pickled hash database "FileList" AND/OR the directory given ' \
-				'as an argument do/does not exist.</h3>Run a scan first using the ' \
+				'as an argument do/does not exist.</h3> Run a scan first using the ' \
 				'"scan" endpoint if the directory is valid, otherwise use a ' \
 				'valid directory.<br><h3>Directory used was:</h3>'\
 			    f'&nbsp&nbsp&nbsp&nbsp{directory}'
