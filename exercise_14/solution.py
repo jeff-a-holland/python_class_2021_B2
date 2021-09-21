@@ -10,8 +10,8 @@ def main():
 		directory = sys.argv[1]
 	except:
 		raise ValueError('Missing an argument (the directory where the pickled file resides). Exiting...')
-	url = 'http://127.0.0.1:5000/rescan'
 
+	url = 'http://127.0.0.1:5000/rescan'
 	response = requests.get(url, params={'directory': f'{directory}'})
 
 	# Clean up the HTML formatting in the response
